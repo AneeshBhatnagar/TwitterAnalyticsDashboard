@@ -1,0 +1,17 @@
+{
+  "name"         : "twitter-analytics",
+  "version"      : "1.0.0",
+  "description"  : "Server for Fetching Tweets and delivering to frontend.",
+  "main"         : "server.js",
+  "author"       : "Aneesh Bhatnagar",
+  "dependencies" : {
+    "body-parser"    : "^1.4.3",
+    "express"        : "^4.13.4",
+    "method-override": "^2.1.3",
+    "mongoose"       : "^4.4.12",
+    "morgan"         : "^1.1.1",
+    "twitter"        : "^1.7.0",
+    "sentiment"      : "^4.0.0",
+    "node-geocoder"  : "^3.16.0"
+  }
+}

@@ -1,5 +1,5 @@
 var lineChart, splineChart;
-var Cloudwords, tweets;
+var Cloudwords;
 
 $(window).load(function(){
 	var numberPattern = /\d+/g;
@@ -11,13 +11,6 @@ $(window).load(function(){
 	console.log(w)
 	generateCharts();
 	generateMap();
-	$.ajax({
-		url: '/api/allTweets',
-		type: 'GET'
-
-	}).done(function(resp){
-		tweets = resp;
-	});
 });
 
 var data = ['data1',30, 200, 100, 400, 150, 250];

@@ -41,13 +41,6 @@ var geocoder = NodeGeocoder(geoOptions);
 // listen (start app with node server.js) ======================================
 app.listen(8080);
 console.log("App listening on port 8080");
-//startStream("WhatsApp");
-
-/*
-//Formatting Date to just year - month- day
-var tweetDate = 'Mon Dec 02 23:45:49 +0000 2013';
-var x = moment(tweetDate, 'ddd MMM DD HH:mm:ss ZZ YYYY', 'en');
-console.log(x.format("YYYY-MM-DD"));*/
 
 var Tweet = mongoose.model('Tweet',{
     tweet_id: String,
@@ -56,27 +49,10 @@ var Tweet = mongoose.model('Tweet',{
     hashtags_mentions: [String],
     location: String,
     verified: Boolean,
-    date: Date,
+    date: String,
     sentiment: String,
     searchTerm: String
 });
-
-//Find min ID
-/*Tweet.find({searchTerm:"Trump"}).sort({tweet_id:1}).limit(1).exec(function(err, res){
-    console.log(res);
-});*/
-
-//Count by country, where search term is Trump
-/*Tweet.aggregate([
-        {"$match": {searchTerm:"Trump"}},
-        {"$group" : {_id:"$location", count:{$sum:1}}},
-        {"$sort" : {"count":-1}}
-    ],function(err, res){
-        console.log(res);
-    }
-);*/     
-
-//Function to process the tweets and save in the mongodb.
 
 function startStream(word){
     var stream = client.stream('statuses/filter', {track: word});
@@ -203,13 +179,12 @@ app.get('/api/trends', function(req, res){
     });
 });
 
-app.post('/api/wordCount', function(req, res){
+app.post('/api/popularWords', function(req, res){
     var word = req.body.text;
     Tweet.aggregate([
         {"$match": {searchTerm:word}},
         {"$unwind": "$hashtags_mentions"},
         {"$group" : {_id:"$hashtags_mentions", count:{$sum:1}}},
-        {"$sort" : {"count":-1}}
     ],function(err, resp){
         var op = [];
         for(i=0; i<resp.length; i++){
@@ -226,13 +201,12 @@ app.post('/api/lang', function(req, res){
     var word = req.body.text;
     Tweet.aggregate([
         {"$match": {searchTerm:word}},
-        {"$group" : {_id:"$lang", count:{$sum:1}}},
-        {"$sort" : {"count":-1}}
+        {"$group" : {_id:"$lang", count:{$sum:1}}}
     ],function(err, resp){
         var l = [];
         var c = [];
         for(i=0; i<resp.length; i++){
-            if(resp[i]._id !=null){
+            if(resp[i]._id !=null && resp[i]._id !="und"){
                 l.push(resp[i]._id);
                 c.push(resp[i].count);
             }
@@ -247,7 +221,6 @@ app.post('/api/location', function(req, res){
     Tweet.aggregate([
         {"$match": {searchTerm:word}},
         {"$group" : {_id:"$location", count:{$sum:1}}},
-        {"$sort" : {"count":-1}}
     ],function(err, resp){
         var l = [];
         var c = [];
@@ -269,7 +242,6 @@ app.post('/api/devices', function(req, res){
     Tweet.aggregate([
         {"$match": {searchTerm:word}},
         {"$group" : {_id:"$source", count:{$sum:1}}},
-        {"$sort" : {"count":-1}}
     ],function(err, resp){
         var s = [];
         var c = [];
@@ -289,7 +261,6 @@ app.post('/api/date', function(req, res){
     Tweet.aggregate([
         {"$match": {searchTerm:word}},
         {"$group" : {_id:"$date", count:{$sum:1}}},
-        {"$sort" : {"count":-1}}
     ],function(err, resp){
         var d = [];
         var c = [];
@@ -309,17 +280,29 @@ app.post('/api/sentiment', function(req, res){
     Tweet.aggregate([
         {"$match": {searchTerm:word}},
         {"$group" : {_id:"$sentiment", count:{$sum:1}}},
-        {"$sort" : {"count":-1}}
     ],function(err, resp){
         var s = [];
         var c = [];
         for(i=0; i<resp.length; i++){
             if(resp[i]._id !=null){
-                s.push(resp[i]._id);
-                c.push(resp[i].count);
+                var t = [resp[i]._id,resp[i].count];
+                s.push(t);
+                var x = {};
+                if(resp[i]._id == "Very Happy"){
+                    x[resp[i]._id] = "#FFD700";
+                }else if(resp[i]._id == "Happy"){
+                    x[resp[i]._id] ="red";
+                }else if(resp[i]._id == "Very Sad"){
+                    x[resp[i]._id] ="green";
+                }else if(resp[i]._id == "Sad"){
+                    x[resp[i]._id] = "blue";
+                }else{
+                    x[resp[i]._id] = "black";
+                }
+                c.push(x);
             }
         }
-        var op = {"sentiment":s, "count":c};
+        var op = {"sentiment":s, "color":c};
         res.json(op);
     });
 });

@@ -1,4 +1,5 @@
 var lineChart, splineChart;
+var Cloudwords, tweets;
 
 $(window).load(function(){
 	var numberPattern = /\d+/g;
@@ -10,6 +11,13 @@ $(window).load(function(){
 	console.log(w)
 	generateCharts();
 	generateMap();
+	$.ajax({
+		url: '/api/allTweets',
+		type: 'GET'
+
+	}).done(function(resp){
+		tweets = resp;
+	});
 });
 
 var data = ['data1',30, 200, 100, 400, 150, 250];
@@ -64,8 +72,8 @@ function generateCharts(){
 	            ['Very Sad', 120],
 	        ],
 	        type : 'donut',
-	        /*onclick: function (d, i) { console.log("onclick", d, i); },
-	        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+	        onclick: function (d, i) { console.log("onclick", d, i); },
+	        /*onmouseover: function (d, i) { console.log("onmouseover", d, i); },
 	        onmouseout: function (d, i) { console.log("onmouseout", d, i); },*/
 	        colors: {
 	        	'Very Happy':'#FFD700',
@@ -80,7 +88,7 @@ function generateCharts(){
 	    }
 	});
 	
-	var words = [
+	Cloudwords = [
 		{text: "Lorem", weight: 13},
 		{text: "Ipsum", weight: 10.5},
 		{text: "Dolor", weight: 9.4},
@@ -90,7 +98,7 @@ function generateCharts(){
 		{text: "Adipiscing", weight: 5}
 	];
 
-	$('#wordCloud').jQCloud(words);
+	$('#wordCloud').jQCloud(Cloudwords);
 }
 
 $("#changeButton").click(function(){

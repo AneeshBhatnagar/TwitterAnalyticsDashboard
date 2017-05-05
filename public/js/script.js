@@ -126,7 +126,7 @@ function requestAllData(word){
 		    contentType: 'application/json', 
 		    data: JSON.stringify({"text":word})},
 		).done(function(resp){
-			createSentiment(resp.sentiment, resp.color);
+			createSentiment(resp.sentiment);
 		});
 	}
 

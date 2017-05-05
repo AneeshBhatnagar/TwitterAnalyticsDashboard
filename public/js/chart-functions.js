@@ -111,7 +111,7 @@ function createLocation(location, label){
 	});
 }
 
-function createSentiment(sentiment, color){
+function createSentiment(sentiment){
 	sentimentChart = c3.generate({
     	bindto: '#sentiment',
     	data: {

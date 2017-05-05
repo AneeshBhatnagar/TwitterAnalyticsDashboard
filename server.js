@@ -288,33 +288,20 @@ app.post('/api/sentiment', function(req, res){
         {"$group" : {_id:"$sentiment", count:{$sum:1}}},
     ],function(err, resp){
         var s = [];
-        var c = [];
         for(i=0; i<resp.length; i++){
             if(resp[i]._id !=null){
                 var t = [resp[i]._id,resp[i].count];
                 s.push(t);
-                var x = {};
-                if(resp[i]._id == "Very Happy"){
-                    x[resp[i]._id] = "#FFD700";
-                }else if(resp[i]._id == "Happy"){
-                    x[resp[i]._id] ="red";
-                }else if(resp[i]._id == "Very Sad"){
-                    x[resp[i]._id] ="green";
-                }else if(resp[i]._id == "Sad"){
-                    x[resp[i]._id] = "blue";
-                }else{
-                    x[resp[i]._id] = "black";
-                }
-                c.push(x);
             }
         }
-        var op = {"sentiment":s, "color":c};
+        var op = {"sentiment":s};
         res.json(op);
     });
 });
 
-app.get('/api/allTweets', function(req, res){
-    Tweet.find(function(err, tweets){
+app.post('/api/allTweets', function(req, res){
+    var word = req.body.text;
+    Tweet.find({searchTerm: word}, function(err, tweets){
         if(err){
             res.send(err);
         }

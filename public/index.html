@@ -12,6 +12,7 @@
 	<link href="css/style.css" rel="stylesheet">
 </head>
 <body>
+	<div id="loader"></div>
 	<div class="container">
 		<div id="header" class="row">
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -40,6 +41,9 @@
 			</div>
 		</div>	
 		<div class="row" id="allPlots">
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				<h3 style="text-align: center;">Showing results for <span id="searchTermHeading">#Hello</span></h3>
+			</div>
 			<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" id="plotOptions">
 				<div id="plotStop">
                      <h2>Plots</h2>
@@ -47,7 +51,6 @@
                      <input type="checkbox" checked="true" data-div="devicesDiv"> Devices<br/>
                      <input type="checkbox" checked="true" data-div="locationMapDiv"> Location Map<br/>
                      <input type="checkbox" checked="true" data-div="languageDiv"> Language<br/>
-                     <input type="checkbox" checked="true" data-div="dateDiv"> Date<br/>
                      <input type="checkbox" checked="true" data-div="locationDiv"> Location Popularity<br/>
                      <input type="checkbox" checked="true" data-div="sentimentDiv"> Sentiment Analysis<br/>
                 </div>
@@ -56,7 +59,7 @@
 				<div class="row">
 					<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 customTwitterChart" id="popularWordsDiv">
 						<h2>Popular Words</h2>
-						<div id="popularWords" style="min-height: 150px; width: 100%;"></div>
+						<div id="popularWords" style="min-height: 130px; width: 100%;"></div>
 					</div>
 					<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 customTwitterChart" id="devicesDiv">
 						<h2>Devices</h2>
@@ -71,11 +74,6 @@
 						<h2>Language</h2>
 						<div id="language"></div>
 					</div>
-
-					<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 customTwitterChart" id="dateDiv">
-                              <h2>Date</h2>
-                              <div id="date"></div>
-                         </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 customTwitterChart" id="locationDiv">
 						<h2>Location Popularity</h2>
 						<div id="location"></div>

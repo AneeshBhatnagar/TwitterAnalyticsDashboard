@@ -7,7 +7,8 @@ var express  = require('express'),
     Twitter = require('twitter'),
     sentiment = require('sentiment'),
     NodeGeocoder = require('node-geocoder'),
-    moment = require('moment');
+    timeoutManager = null,
+    stream = null;
 
 // configuration =================
 
@@ -49,13 +50,12 @@ var Tweet = mongoose.model('Tweet',{
     hashtags_mentions: [String],
     location: String,
     verified: Boolean,
-    date: String,
     sentiment: String,
     searchTerm: String
 });
 
 function startStream(word){
-    var stream = client.stream('statuses/filter', {track: word});
+    stream = client.stream('statuses/filter', {track: word});
     console.log("Stream started");
     stream.on('data', function(event) {
       var temp = new Tweet;
@@ -85,8 +85,6 @@ function preProcess(xTweet, t, word){
     });
     t.hashtags_mentions = h_m;
     t.verified = xTweet.user.verified;
-    var tempDate = moment(xTweet.created_at, 'ddd MMM DD HH:mm:ss ZZ YYYY', 'en');
-    t.date = tempDate.format("YYYY-MM-DD");
     var sen = sentiment(xTweet.text).score;
     if(sen>0){
         if(sen > 2){
@@ -133,13 +131,21 @@ function fetchMoreTweets(count,word){
         });
     });
     if(count<4000)
-        setTimeout(fetchMoreTweets.bind(null,count+100,word),10000);
+        timeoutManager = setTimeout(fetchMoreTweets.bind(null,count+100,word),10000);
     else
         startStream(word);
 }
 
 //Defining Routes for the API and application
 app.post('/api/searchTweets', function(req,res){
+    if(timeoutManager){
+        console.log("Quitting the Old Timeout");
+        clearTimeout(timeoutManager);
+    }
+    if(stream){
+        console.log("Quitting the Stream");
+        stream.destroy();
+    }
     var word = req.body.text.toLowerCase();
     var params = {q: word,count: "100"};
     client.get('search/tweets', params, function(error, tweets, response) {
@@ -155,7 +161,7 @@ app.post('/api/searchTweets', function(req,res){
       }
     });
     var resp = {"success":"True"};
-    setTimeout(fetchMoreTweets.bind(null,0,word),10000);
+    timeoutManager = setTimeout(fetchMoreTweets.bind(null,0,word),10000);
     res.json(resp);
 });
 
@@ -199,13 +205,18 @@ app.post('/api/popularWords', function(req, res){
 
 app.post('/api/lang', function(req, res){
     var word = req.body.text;
+    var n = 10;
     Tweet.aggregate([
         {"$match": {searchTerm:word}},
-        {"$group" : {_id:"$lang", count:{$sum:1}}}
+        {"$group" : {_id:"$lang", count:{$sum:1}}},
+        {"$sort" : {"count":-1}}
     ],function(err, resp){
         var l = [];
         var c = [];
-        for(i=0; i<resp.length; i++){
+        if(n > resp.length){
+            n = resp.length;
+        }
+        for(i=0; i<n; i++){
             if(resp[i]._id !=null && resp[i]._id !="und"){
                 l.push(resp[i]._id);
                 c.push(resp[i].count);
@@ -218,18 +229,27 @@ app.post('/api/lang', function(req, res){
 
 app.post('/api/location', function(req, res){
     var word = req.body.text;
+    var n = 10;
     Tweet.aggregate([
         {"$match": {searchTerm:word}},
         {"$group" : {_id:"$location", count:{$sum:1}}},
+        {"$sort" : {"count":-1}}
     ],function(err, resp){
         var l = [];
         var c = [];
         var plot = {};
+        if(n > resp.length){
+            n = resp.length;
+        }
         for(i=0; i<resp.length; i++){
+            if(resp[i]._id !=null){
+                plot[resp[i]._id] = resp[i].count;
+            }
+        }
+        for(i=0; i<n; i++){
             if(resp[i]._id !=null){
                 l.push(resp[i]._id);
                 c.push(resp[i].count);
-                plot[resp[i]._id] = resp[i].count;
             }
         }
         var op = {"loc":l, "count":c, "plot":plot};
@@ -239,38 +259,24 @@ app.post('/api/location', function(req, res){
 
 app.post('/api/devices', function(req, res){
     var word = req.body.text;
+    var n = 10;
     Tweet.aggregate([
         {"$match": {searchTerm:word}},
         {"$group" : {_id:"$source", count:{$sum:1}}},
+        {"$sort" : {"count":-1}}
     ],function(err, resp){
         var s = [];
         var c = [];
-        for(i=0; i<resp.length; i++){
+        if(n>resp.length){
+            n = resp.length;
+        }
+        for(i=0; i<n; i++){
             if(resp[i]._id !=null){
                 s.push(resp[i]._id);
                 c.push(resp[i].count);
             }
         }
         var op = {"source":s, "count":c};
-        res.json(op);
-    });
-});
-
-app.post('/api/date', function(req, res){
-    var word = req.body.text;
-    Tweet.aggregate([
-        {"$match": {searchTerm:word}},
-        {"$group" : {_id:"$date", count:{$sum:1}}},
-    ],function(err, resp){
-        var d = [];
-        var c = [];
-        for(i=0; i<resp.length; i++){
-            if(resp[i]._id !=null){
-                d.push(resp[i]._id);
-                c.push(resp[i].count);
-            }
-        }
-        var op = {"date":d, "count":c};
         res.json(op);
     });
 });

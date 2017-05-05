@@ -1,9 +1,13 @@
 var devicesChart, languageChart, dateChart
 	,locationChart, sentimentChart;
+var cloudActive = false;
 
 function createPopularWords(words){
-	$('#popularWords').jQCloud('destroy');
+	if(cloudActive){
+		$('#popularWords').jQCloud('destroy');
+	}
 	$('#popularWords').jQCloud(words);
+	cloudActive = true;
 }
 
 function createDevices(devices, label){
@@ -37,6 +41,9 @@ function createLocationMap(locations){
 		},
 		onRegionTipShow: function(e, el, code){
 			el.html(el.html()+' (Tweets - '+locations[code]+')');
+		},
+		onRegionClick: function(e, code){
+			console.log(code);
 		}
 	});
 }
@@ -87,7 +94,8 @@ function createLocation(location, label){
 		bindto : "#location",
 	    data: {
 	        columns: [data],
-	        type: 'bar'
+	        type: 'bar',
+	        onclick: function (d, i) { console.log("onclick", d, i); },	        
 	    },
 	    bar: {
 	        width: {
@@ -110,8 +118,6 @@ function createSentiment(sentiment, color){
 	        columns: sentiment,
 	        type : 'donut',
 	        //onclick: function (d, i) { console.log("onclick", d, i); },
-	        /*onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-	        onmouseout: function (d, i) { console.log("onmouseout", d, i); },*/
 	        colors: {'Very Happy':'#FFD700',
 	        	'Happy':'green',
 	        	'Neutral':'black',

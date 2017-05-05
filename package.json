@@ -12,7 +12,6 @@
     "morgan"         : "^1.1.1",
     "twitter"        : "^1.7.0",
     "sentiment"      : "^4.0.0",
-    "node-geocoder"  : "^3.16.0",
-    "moment"         : "^2.18.1"
+    "node-geocoder"  : "^3.16.0"
   }
 }

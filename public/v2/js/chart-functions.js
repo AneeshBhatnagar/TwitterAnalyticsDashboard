@@ -28,6 +28,9 @@ function createDevices(devices){
 
 function createLocationMap(locations){
 	$("#locationMap").html("");
+	$(".jvectormap-tip").each(function(){
+		$(this).remove();
+	})
 	$('#locationMap').vectorMap({
 		map: 'world_mill',
 		series: {

@@ -1,7 +1,6 @@
-var search = "#starwarsday";
 var globalSearchTerm, verifiedFilter;
 var timeoutManager, firstFetch = true, fetchedTweets;
-var filterStatus = false, filterType = "language", filterValue = "es";
+var filterStatus = false, filterType = "", filterValue = "";
 $(document).ready(function () {
 	$("#topic1").hide();
 	$("#topic2").hide();
@@ -79,80 +78,10 @@ function fetchNewTweets(word){
 	    url: '/api/searchTweets', 
 	    type: 'POST', 
 	    contentType: 'application/json', 
-	    data: JSON.stringify({"text":word})},
+	    data: JSON.stringify({"text":word})}
 	).done(function(resp){
 		timeoutManager = setTimeout(requestD3Data.bind(null,word),4500);		
 	});
-}
-
-function requestAllData(word){
-	$("#searchTermHeading").text(word);
-	if($("#popularWordsDiv").is(":visible") || firstFetch == true){
-		$.ajax({
-		    url: '/api/popularWords', 
-		    type: 'POST', 
-		    contentType: 'application/json', 
-		    data: JSON.stringify({"text":word})},
-		).done(function(resp){
-			createPopularWords(resp);
-		});
-	}
-	if($("#devicesDiv").is(":visible") || firstFetch == true){
-		$.ajax({
-		    url: '/api/devices', 
-		    type: 'POST', 
-		    contentType: 'application/json', 
-		    data: JSON.stringify({"text":word})},
-		).done(function(resp){
-			createDevices(resp.count, resp.source);
-		});
-	}
-	if($("#locationMapDiv").is(":visible") || $("#locationDiv").is(":visible") || firstFetch == true){
-		$.ajax({
-		    url: '/api/location', 
-		    type: 'POST', 
-		    contentType: 'application/json', 
-		    data: JSON.stringify({"text":word})},
-		).done(function(resp){
-			if($("#locationDiv").is(":visible") || firstFetch == true)
-				createLocation(resp.count, resp.loc);
-			if($("#locationMapDiv").is(":visible") || firstFetch == true)
-				createLocationMap(resp.plot);
-		});
-	}
-
-	if($("#languageDiv").is(":visible") || firstFetch == true){
-		$.ajax({
-		    url: '/api/lang', 
-		    type: 'POST', 
-		    contentType: 'application/json', 
-		    data: JSON.stringify({"text":word})},
-		).done(function(resp){
-			createLanguage(resp.count, resp.lang);
-		});
-	}
-
-	if($("#sentimentDiv").is(":visible") || firstFetch == true){
-		$.ajax({
-		    url: '/api/sentiment', 
-		    type: 'POST', 
-		    contentType: 'application/json', 
-		    data: JSON.stringify({"text":word})},
-		).done(function(resp){
-			createSentiment(resp.sentiment);
-		});
-	}
-
-	$("#loader").fadeOut();
-	if(firstFetch == true){
-		$('#allPlots').animate({opacity: 1},'slow');
-		setTimeout(function(){
-			$('html,body').animate({
-		        scrollTop: $("#allPlots").offset().top},'slow');
-		},600);
-	}
-	firstFetch = false;
-	timeoutManager = setTimeout(requestAllData.bind(null,word),9000);	
 }
 
 function fixDiv(){
@@ -171,7 +100,7 @@ function requestD3Data(word){
 	    url: '/api/allTweets', 
 	    type: 'POST', 
 	    contentType: 'application/json', 
-	    data: JSON.stringify({"text":word})},
+	    data: JSON.stringify({"text":word})}
 	).done(function(resp){
 		fetchedTweets = resp;
 		parseD3Data(word);

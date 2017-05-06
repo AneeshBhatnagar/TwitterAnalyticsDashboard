@@ -119,7 +119,7 @@ function requestAllData(word){
 		});
 	}
 
-	if($("#devicesDiv").is(":visible") || firstFetch == true){
+	if($("#sentimentDiv").is(":visible") || firstFetch == true){
 		$.ajax({
 		    url: '/api/sentiment', 
 		    type: 'POST', 

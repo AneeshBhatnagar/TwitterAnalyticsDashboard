@@ -43,9 +43,12 @@
 		<div class="row" id="allPlots">
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 				<h3 style="text-align: center;">Showing results for <span id="searchTermHeading">#Hello</span></h3>
+				<h3 style="text-align: center;" id="conditionDisplay"><span id="conditionText"></span><br/><span id="conditionButton">Clear Filter</span></h3>
 			</div>
 			<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" id="plotOptions">
 				<div id="plotStop">
+					 <h2>Options</h2>
+					 <input type="checkbox" id="onlyVerified"> Only Verified Users<br/><br/>
                      <h2>Plots</h2>
                      <input type="checkbox" checked="true" data-div="popularWordsDiv"> Popular Words<br/>
                      <input type="checkbox" checked="true" data-div="devicesDiv"> Devices<br/>
@@ -59,7 +62,7 @@
 				<div class="row">
 					<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 customTwitterChart" id="popularWordsDiv">
 						<h2>Popular Words</h2>
-						<div id="popularWords" style="min-height: 130px; width: 100%;"></div>
+						<div id="popularWords" style="min-height: 300px; width: 100%;"></div>
 					</div>
 					<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 customTwitterChart" id="devicesDiv">
 						<h2>Devices</h2>

@@ -1,0 +1,78 @@
+body{
+	overflow-y: hidden;
+}
+
+#conditionButton{
+	cursor: pointer;
+	color:#111111;
+}
+
+#conditionText{
+	color:#ff0000;
+}
+
+#search{
+	
+	margin-bottom: 20px;
+	/*margin-top: 20px;*/
+	/*margin-left: 0;*/
+}
+
+#trending{
+	width:150px;
+	display: block;
+	margin:0 auto;
+}
+
+#searchBox{
+	width: 233px;
+	display: block;
+	margin:0 auto;
+}
+
+#textBox{
+	height:32px;
+} 
+
+#header{
+	
+	margin-bottom: 20px;
+	
+}
+#h1{
+	margin-top: 3cm;
+}
+#topic1,#topic2
+{
+	margin-top: 10px;
+	/*margin-left: 4cm;*/
+}
+
+#topic1>div, #topic2>div{
+	max-width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+#topic1 button, #topic2 button{
+	margin-right: 10px;
+}
+
+#textBox.value{
+	color: 'grey';
+}
+
+.fixed-scroll{
+	position: fixed;
+	top:20px;
+}
+
+#loader{
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 99999;
+  background:url(../images/loader.gif) 50% 50% no-repeat #ffffff;
+}

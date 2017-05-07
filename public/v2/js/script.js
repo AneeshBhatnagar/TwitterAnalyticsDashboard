@@ -46,6 +46,20 @@ $(document).ready(function () {
 		filterStatus = false;
 		parseD3Data(globalSearchTerm);
 	});
+
+	$("#clearAllFilters").click(function(){
+		verifiedFilter = false;
+		filterStatus = false;
+		$("#plotOptions input").each(function(){
+			if($(this).attr("id") == "onlyVerified"){
+				this.checked = false;
+			}
+			else{
+				this.checked = true;
+			}
+		});
+		parseD3Data();
+	});
  });
 
 //Function to add trending topics to the webpage

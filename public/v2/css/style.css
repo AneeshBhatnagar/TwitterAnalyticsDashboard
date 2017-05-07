@@ -2,9 +2,9 @@ body{
 	overflow-y: hidden;
 }
 
-#conditionButton{
+#conditionButton, #clearAllFilters{
 	cursor: pointer;
-	color:#111111;
+	margin-top:10px;
 }
 
 #conditionText{
